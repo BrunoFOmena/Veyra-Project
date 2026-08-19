@@ -6,38 +6,38 @@
   <img src="https://img.shields.io/badge/DuckDB%20%2F%20PostgreSQL-336791?logo=postgresql&logoColor=white" />
   <img src="https://img.shields.io/badge/MinIO-C72E49?logo=minio&logoColor=white" />
   <img src="https://img.shields.io/badge/Prefect-070E10?logo=prefect&logoColor=white" />
-  <!-- troque por um badge de CI real (ex.: GitHub Actions) assim que o pipeline existir -->
+  <!-- replace with a real CI badge (e.g. GitHub Actions) once the pipeline exists -->
 </p>
 
 # 🧬 Veyra
 
-**De FHIR bruto a dados clínicos utilizáveis.**
+**From raw FHIR to usable clinical data.**
 
-Veyra é a camada de dados entre o prontuário e o analytics. Recebe FHIR (e, depois, sistemas laboratoriais), normaliza para um modelo clínico canônico, mede qualidade e entrega Patient 360, indicadores de laboratório e a jornada do paciente — via warehouse, API e dashboard.
+Veyra is the data layer between the EHR and analytics. It ingests FHIR (and, later, laboratory systems), normalizes it into a canonical clinical model, measures quality, and delivers Patient 360, lab indicators, and the patient journey — through a warehouse, an API, and a dashboard.
 
-Clínicas, laboratórios e healthtechs já têm o dado. O que falta é transformá-lo, com governança, em BI, analytics e IA.
-
----
-
-## 📚 Central de Documentação
-
-| Módulo | Link de Acesso | Conteúdo |
-|--------|-----------------|----------|
-| 🏛️ **Arquitetura & Dados** | [`schema.md`](schema.md) | Camadas, grains, stack completa e fases do projeto |
-| 🧩 **Modelo Canônico** | [`#o-que-o-veyra-faz`](#-o-que-o-veyra-faz) | FHIR aninhado → tabelas clínicas com chaves estáveis |
-| ✅ **Qualidade de Dados** | [`#qualidade-como-produto`](#-qualidade-como-produto) | Regras, score e gate entre Silver e Gold |
-| 🗺️ **Roadmap & Status** | [`#status`](#-status) | Onde o projeto está agora, MVP e próximos passos |
-| 🚫 **Escopo** | [`#fora-de-escopo`](#-fora-de-escopo) | O que o Veyra não faz |
+Clinics, labs, and healthtechs already have the data. What they lack is turning it, with governance, into BI, analytics, and AI.
 
 ---
 
-## ⚠️ O problema
+## 📚 Documentation hub
 
-Interoperabilidade não termina no transporte. Um bundle FHIR ou um export de LIS chega aninhado, com códigos heterogêneos, unidades inconsistentes e buracos silenciosos. Daí não sai um hemograma longitudinal, um TAT confiável nem um score de qualidade que o time de dados consiga defender.
+| Module | Link | Contents |
+|--------|------|----------|
+| 🏛️ **Architecture & data** | [`schema.md`](schema.md) | Layers, grains, full stack, and project phases |
+| 🧩 **Canonical model** | [`#what-veyra-does`](#-what-veyra-does) | Nested FHIR → clinical tables with stable keys |
+| ✅ **Data quality** | [`#quality-as-a-product`](#-quality-as-a-product) | Rules, score, and the gate between Silver and Gold |
+| 🗺️ **Roadmap & status** | [`#status`](#-status) | Where the project is now, MVP, and next steps |
+| 🚫 **Scope** | [`#out-of-scope`](#-out-of-scope) | What Veyra does not do |
 
-O resultado típico: o EHR existe, o laboratório produz volume — e o analytics continua em planilha.
+---
 
-## 🔧 O que o Veyra faz
+## ⚠️ The problem
+
+Interoperability does not end at transport. A FHIR bundle or a LIS export arrives nested, with heterogeneous codes, inconsistent units, and silent gaps. That does not yield a longitudinal CBC, a trustworthy TAT, or a quality score a data team can stand behind.
+
+The typical outcome: the EHR exists, the lab produces volume — and analytics still lives in a spreadsheet.
+
+## 🔧 What Veyra does
 
 ```
 EHR / Synthea / LIS
@@ -46,46 +46,46 @@ EHR / Synthea / LIS
    Health Data Connector
         │
         ▼
-   Lakehouse clínico          Bronze → Silver → Gold
+   Clinical lakehouse         Bronze → Silver → Gold
         │
-        ├── Quality Engine    score + catálogo de issues
-        ├── Lab Warehouse     LOINC · UCUM · faixas · críticos
-        └── Patient Journey   timeline · episódios · care gaps
+        ├── Quality Engine    score + issue catalog
+        ├── Lab Warehouse     LOINC · UCUM · ranges · criticals
+        └── Patient Journey   timeline · episodes · care gaps
         │
         ▼
    PostgreSQL  →  Dashboard  ·  REST API
         │
-   Observability em cada hop
+   Observability on every hop
 ```
 
-| Capacidade | Entrega |
-|------------|---------|
-| **Connector** | Ingestão batch (NDJSON) e, em seguida, API FHIR ao vivo |
-| **Modelo canônico** | FHIR aninhado → tabelas clínicas com chaves estáveis |
-| **Qualidade** | Completeness, validity, consistency, uniqueness, timeliness |
-| **Labs** | Resultados interpretados, TAT, recoleta, valores críticos |
-| **Jornada** | Linha temporal do paciente a partir de recursos isolados |
-| **Serving** | O mesmo modelo no warehouse, na API e no dashboard |
-| **Observability** | Volume, schema drift, freshness, códigos inválidos, pipelines |
+| Capability | Delivers |
+|------------|----------|
+| **Connector** | Batch ingest (NDJSON), then a live FHIR API |
+| **Canonical model** | Nested FHIR → clinical tables with stable keys |
+| **Quality** | Completeness, validity, consistency, uniqueness, timeliness |
+| **Labs** | Interpreted results, TAT, recollection, critical values |
+| **Journey** | Patient timeline rebuilt from isolated resources |
+| **Serving** | The same model in the warehouse, the API, and the dashboard |
+| **Observability** | Volume, schema drift, freshness, invalid codes, pipelines |
 
-> Não substitui o EHR. Não prescreve. Não decide clinicamente. Padroniza, valida e serve o dado para quem analisa.
+> It does not replace the EHR. It does not prescribe. It does not make clinical decisions. It standardizes, validates, and serves data for people who analyze.
 
-## 🎯 Para quem
+## 🎯 Who it is for
 
-- Laboratórios que precisam de infraestrutura analítica, não só de laudo
-- Clínicas e hospitais com API FHIR e pouca ponte para BI
-- Healthtechs e pesquisa clínica que consomem dados heterogêneos
-- Times de IA médica que não podem treinar em cima de Observation crua
+- Labs that need analytics infrastructure, not just a report
+- Clinics and hospitals with a FHIR API and little bridge to BI
+- Healthtechs and clinical research teams consuming heterogeneous data
+- Medical AI teams that cannot train on raw Observation payloads
 
-O primeiro domínio de profundidade é **laboratório** (LOINC, UCUM, faixas de referência). O restante do modelo clínico (encontros, medicamentos, diagnósticos) entra no mesmo lakehouse.
+The first deep domain is **laboratory** (LOINC, UCUM, reference ranges). The rest of the clinical model (encounters, medications, diagnoses) lives in the same lakehouse.
 
-## ✅ Qualidade como produto
+## ✅ Quality as a product
 
-A qualidade não é um relatório no fim. É um **gate** entre Silver e Gold: o score viaja com o dataset; issues graves podem ir para quarentena.
+Quality is not a report at the end. It is a **gate** between Silver and Gold: the score travels with the dataset; severe issues can go to quarantine.
 
 ```
 Dataset
- ├── 1.240.331 records
+ ├── 1,240,331 records
  ├── 3.2% missing values
  ├── 0.8% duplicates
  ├── 1.4% invalid codes
@@ -95,48 +95,48 @@ Completeness 91%   Validity 97%   Consistency 88%
 Uniqueness   94%   Timeliness 82%   Overall 90%
 ```
 
-Interoperabilidade, neste produto, inclui harmonização, sincronização, qualidade e governança — não só o POST na API FHIR.
+Interoperability, in this product, includes harmonization, synchronization, quality, and governance — not just a POST to the FHIR API.
 
-## 🏗️ Arquitetura
+## 🏗️ Architecture
 
-Lakehouse medallion, vocabulários clínicos e serving desacoplado da ingestão.
+Medallion lakehouse, clinical vocabularies, and serving decoupled from ingestion.
 
 ```mermaid
 flowchart LR
-  SRC[Fontes FHIR / LIS] --> CON[Connector]
+  SRC[FHIR / LIS sources] --> CON[Connector]
   CON --> BR[Bronze]
-  BR --> SV[Silver canônico]
+  BR --> SV[Canonical Silver]
   SV --> DQ[Quality Engine]
   DQ --> GL[Gold]
   GL --> SRV[API + Dashboard]
 ```
 
-O desenho completo — camadas, grains, stack e fases — está em [`schema.md`](schema.md).
+The full design — layers, grains, stack, and phases — lives in [`schema.md`](schema.md).
 
-| Camada | Papel |
-|--------|--------|
-| Bronze | Raw imutável no MinIO (S3) |
-| Silver | dbt: FHIR → modelo canônico + LOINC/UCUM |
-| Quality | Regras clínicas e Data Quality Score |
+| Layer | Role |
+|-------|------|
+| Bronze | Immutable raw in MinIO (S3) |
+| Silver | dbt: FHIR → canonical model + LOINC/UCUM |
+| Quality | Clinical rules and Data Quality Score |
 | Gold | Patient 360 · Lab Warehouse · Journey |
 | Serving | PostgreSQL, FastAPI, dashboard |
-| Observability | Drift, volume, freshness, falhas |
+| Observability | Drift, volume, freshness, failures |
 
-**Stack:** Python · FastAPI · Docker · MinIO · dbt · DuckDB / PostgreSQL · Prefect · Synthea no desenvolvimento.
+**Stack:** Python · FastAPI · Docker · MinIO · dbt · DuckDB / PostgreSQL · Prefect · Synthea in development.
 
-Spark só entra se o volume passar do que DuckDB/Postgres resolvem. Desenvolvimento usa dados sintéticos — sem PHI real.
+Spark only lands if volume outgrows DuckDB/Postgres. Development uses synthetic data — no real PHI.
 
 ## 🗺️ Status
 
-Arquitetura definida. Implementação a partir da fundação local (Compose + lake + loader Synthea).
+Architecture is defined. Implementation starts from the local foundation (Compose + lake + Synthea loader).
 
-| Agora | MVP | Depois |
-|-------|-----|--------|
-| Spec E2E em `schema.md` | Ingestão → Silver → qualidade → Gold lab + API mínima | Jornada, observability, FHIR ao vivo, LIS |
+| Now | MVP | Next |
+|-----|-----|------|
+| E2E spec in `schema.md` | Ingestion → Silver → quality → Gold lab + minimal API | Journey, observability, live FHIR, LIS |
 
-## 🚫 Fora de escopo
+## 🚫 Out of scope
 
-- Prontuário eletrônico ou prescrição
-- Decisão clínica automatizada sem profissional
-- Multi-tenant SaaS e Spark no MVP
-- Conector LIS completo na primeira entrega
+- Electronic health record or prescribing
+- Automated clinical decisions without a professional
+- Multi-tenant SaaS and Spark in the MVP
+- A full LIS connector in the first delivery
