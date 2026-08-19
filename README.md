@@ -150,6 +150,13 @@ Expected:
 
 MinIO console: http://localhost:9001 (credentials from `.env`).
 
+Unit and edge tests (no Docker required):
+
+```bash
+pip install -e ".[dev]"
+pytest
+```
+
 ## 🗺️ Status
 
 P0 is running locally: Compose brings up the lake, the warehouse, and the API.
