@@ -27,6 +27,7 @@ Clinics, labs, and healthtechs already have the data. What they lack is turning 
 | 🧩 **Canonical model** | [`#what-veyra-does`](#-what-veyra-does) | Nested FHIR → clinical tables with stable keys |
 | ✅ **Data quality** | [`#quality-as-a-product`](#-quality-as-a-product) | Rules, score, and the gate between Silver and Gold |
 | 🗺️ **Roadmap & status** | [`#status`](#-status) | Where the project is now, MVP, and next steps |
+| 🖥️ **Local setup** | [`#local-setup`](#-local-setup) | Compose stack: MinIO, Postgres, FastAPI |
 | 🚫 **Scope** | [`#out-of-scope`](#-out-of-scope) | What Veyra does not do |
 
 ---
@@ -126,13 +127,36 @@ The full design — layers, grains, stack, and phases — lives in [`schema.md`]
 
 Spark only lands if volume outgrows DuckDB/Postgres. Development uses synthetic data — no real PHI.
 
+## 🖥️ Local setup
+
+P0 foundation: MinIO (Bronze), PostgreSQL, and a FastAPI health endpoint. Requires Docker.
+
+```bash
+cp .env.example .env
+docker compose up --build
+```
+
+Then:
+
+```bash
+curl http://localhost:8000/health
+```
+
+Expected:
+
+```json
+{"status":"ok","postgres":"ok","minio":"ok","bucket":"veyra-bronze"}
+```
+
+MinIO console: http://localhost:9001 (credentials from `.env`).
+
 ## 🗺️ Status
 
-Architecture is defined. Implementation starts from the local foundation (Compose + lake + Synthea loader).
+P0 is running locally: Compose brings up the lake, the warehouse, and the API.
 
 | Now | MVP | Next |
 |-----|-----|------|
-| E2E spec in `schema.md` | Ingestion → Silver → quality → Gold lab + minimal API | Journey, observability, live FHIR, LIS |
+| P0 foundation (`docker compose up`) | Ingestion → Silver → quality → Gold lab + minimal API | Journey, observability, live FHIR, LIS |
 
 ## 🚫 Out of scope
 
